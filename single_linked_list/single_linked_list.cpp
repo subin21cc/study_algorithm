@@ -4,15 +4,26 @@ Node* SLL_CreateNode(ElementType NewData)
 {
 	Node* NewNode = (Node*)malloc(sizeof(Node));
 	
-	NewNode->Data = NewData;
-	NewNode->NextNode = NULL;
+	if (NewNode)
+	{
+		NewNode->Data = NewData;
+		NewNode->NextNode = NULL;
+	}
 
 	return NewNode;
 }
 
-void SLL_DestroyNode(Node* Node)
+void SLL_Clear(Node** Head)
 {
+	Node* n = *Head;
 
+	while (n != NULL)
+	{
+		Node* t = n->NextNode;
+		free(n);
+		n = t;
+	}
+	*Head = NULL;
 }
 
 void SLL_AppendNode(Node** Head, Node* NewNode)
@@ -74,8 +85,9 @@ void SLL_RemoveAt(Node** Head, int Location)
 
 	if (Location == 0)
 	{
+		Node* t = next->NextNode;
 		free(*Head);
-		(*Head) = next->NextNode;
+		(*Head) = t;
 		return;
 	}
 
@@ -85,8 +97,9 @@ void SLL_RemoveAt(Node** Head, int Location)
 		{
 			if (next->NextNode != NULL)
 			{
+				Node* t = next->NextNode->NextNode;
 				free(next->NextNode);
-				next->NextNode = next->NextNode->NextNode;
+				next->NextNode = t;
 			}
 			return;
 		}
@@ -123,3 +136,23 @@ int SLL_GetNodeCount(Node* Head)
 	return count;
 }
 
+void SLL_Append(Node** List, int n)
+{
+	Node* Current = NULL;
+	Node* NewNode = NULL;
+
+	NewNode = SLL_CreateNode(n);
+	SLL_AppendNode(List, NewNode);
+
+}
+
+void SLL_InsertAt(Node* List, int Location, int Data)
+{
+	Node* Current = NULL;
+	Node* NewNode = NULL;
+
+	Current = SLL_GetNodeAt(List, Location);
+	NewNode = SLL_CreateNode(Data);
+
+	SLL_InsertAfter(Current, NewNode);
+}
